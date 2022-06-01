@@ -1,0 +1,19 @@
+﻿@model PostEditModel
+
+<h1>Edit</h1>
+
+<div>
+    <form asp-action="Edit" asp-controller="Posts">
+        <div class="form-group">
+
+            <textarea asp-for="Text">
+
+
+                 </textarea>
+            <span asp-validation-for="Text"></span> <br />
+            <input type="hidden" asp-for="ThreadId" />
+            <input type="hidden" asp-for="PostId" />
+            <input type="submit" value="Update" class="btn btn-primary" />
+        </div>
+    </form>
+</div>

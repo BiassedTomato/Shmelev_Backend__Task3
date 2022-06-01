@@ -1,0 +1,15 @@
+﻿@model BoardEditModel
+
+<h1>Edit</h1>
+
+<h1>@Model.Name</h1>
+<div>
+    <form asp-action="Edit" asp-controller="Boards">
+        <div class="form-group">
+            <input type="text" asp-for="Name" />
+            <span asp-validation-for="Name"></span> <br />
+
+            <input type="submit" value="Update" class="btn btn-primary" />
+        </div>
+    </form>
+</div>

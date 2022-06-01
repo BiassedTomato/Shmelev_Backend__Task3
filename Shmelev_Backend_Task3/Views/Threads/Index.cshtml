@@ -1,0 +1,31 @@
+﻿@model ThreadViewModel
+
+<div>
+    <a class="btn btn-primary" asp-controller="Posts" asp-action="Create" asp-route-threadId=@Model.ThreadId>New post</a>
+    <table style="border:1px solid black;">
+
+        @for (int i = 0; i < Model.Posts.Count; i++)
+        {
+            var post = Model.Posts[i];
+
+
+            <tr>
+                <td style="border:1px solid black;">
+                    <a>@post.Text</a>  <a asp-action="Edit" asp-route-postId=@post.Id asp-controller="Posts" class="btn Button btn-info">Edit</a> <a asp-action="Delete" asp-controller="Posts" asp-route-postId=@post.Id class="btn Button btn-danger">X</a>
+
+                    @if (post.Attachments != null)
+                    {
+
+                        @foreach (var attachment in post.Attachments)
+                        {
+                            <img src=@attachment.FilePath />
+                        }
+                    }
+                </td>
+
+            </tr>
+
+        }
+
+    </table>
+</div>

@@ -1,0 +1,25 @@
+﻿@model IndexViewModel
+
+
+<div>
+    <table style="border:1px solid black;">
+
+        @if (Context.User.IsInRole("Admin"))
+        {
+            <a asp-action="Create" asp-controller="Boards" class="btn Button btn-info">New board</a>
+        }
+
+        @for (int i = 0; i < Model.Boards.Count; i++)
+        {
+            var board = Model.Boards[i];
+
+            <tr>
+                <td style="border:1px solid black;">
+                    <a asp-action="DisplayBoard" asp-controller="Boards" asp-route-boardId="@(board.Id)">/@board.Name/</a>
+                </td>
+            </tr>
+
+        }
+
+    </table>
+</div>
