@@ -7,10 +7,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Shmelev_Backend_Task3
 {
-    public class ForumContext : IdentityDbContext
+    /// <summary>
+    /// wtf
+    /// </summary>
+    public class ForumContext : IdentityDbContext<ForumUser,ForumRole,string,IdentityUserClaim<string>,ForumUserRole,IdentityUserLogin<string>,IdentityRoleClaim<string>,IdentityUserToken<string>>
     {
         public ForumContext(DbContextOptions options) : base(options)
         {
@@ -60,17 +64,29 @@ namespace Shmelev_Backend_Task3
                 .HasMany(x => x.ModeratedBoards)
                 .WithMany(x => x.Moderators);
 
+            modelBuilder.Entity<ForumUser>()
+                .HasMany(x => x.ModeratedBoards)
+                .WithMany(x => x.Moderators);
 
+            modelBuilder.Entity<ForumUser>()
+            .HasMany(x => x.ForumUserRoles)
+            .WithOne(x => x.User)
+            .HasForeignKey(x=>x.UserId);
 
-            // seed roles
+            modelBuilder.Entity<ForumRole>()
+            .HasMany(x => x.ForumUserRoles)
+            .WithOne(x => x.Role)
+            .HasForeignKey(x => x.RoleId);
+
 
             string admID = null;
+            string modID = null;
 
             foreach (var role in Shmelev_Backend_Task3.Roles.RolesList)
             {
                 var gid = Guid.NewGuid().ToString();
-                modelBuilder.Entity<IdentityRole>()
-                    .HasData(new IdentityRole()
+                modelBuilder.Entity<ForumRole>()
+                    .HasData(new ForumRole()
                     {
                         Id = gid,
                         Name = role,
@@ -80,6 +96,8 @@ namespace Shmelev_Backend_Task3
 
                 if (role == "Admin")
                     admID = gid;
+                else if (role == "Moderator")
+                    modID = gid;
             }
 
             // seed admin
@@ -95,10 +113,23 @@ namespace Shmelev_Backend_Task3
 
             };
 
+            var mod = new ForumUser()
+            {
+                Id = "2",
+                UserName = "mod@mod.ru",
+                NormalizedUserName = "mod@mod.ru".ToUpper(),
+                NormalizedEmail = "mod@mod.ru".ToUpper(),
+                Email = "mod@mod.ru",
+                EmailConfirmed = true,
+
+            };
+
             // password hashing :)
             PasswordHasher<ForumUser> hasher = new PasswordHasher<ForumUser>();
 
             adm.PasswordHash = hasher.HashPassword(adm, "Admin123!");
+
+            mod.PasswordHash = hasher.HashPassword(mod, "Admin123!");
 
 
 
@@ -106,14 +137,24 @@ namespace Shmelev_Backend_Task3
             modelBuilder.Entity<ForumUser>()
                 .HasData(adm);
 
+            modelBuilder.Entity<ForumUser>()
+                .HasData(mod);
+
 
             // assign the role
 
-            modelBuilder.Entity<IdentityUserRole<string>>()
-                .HasData(new IdentityUserRole<string>()
+            modelBuilder.Entity<ForumUserRole>()
+                .HasData(new ForumUserRole()
                 {
                     RoleId = admID,
                     UserId = "1"// TODO: linking between roles for admin
+                });
+
+            modelBuilder.Entity<ForumUserRole>()
+                .HasData(new ForumUserRole()
+                {
+                    RoleId = modID,
+                    UserId = "2"// TODO: linking between roles for admin
                 });
         }
     }

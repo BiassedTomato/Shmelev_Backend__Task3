@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -23,5 +24,9 @@ namespace Shmelev_Backend_Task3
         Task<string> GetPostAuthor(int postId);
 
         Task<ForumUser> GetThreadAuthorUser(int threadId);
+
+        List<ForumUser> GetAllUsers(Func<ForumUser, bool> predicate);
+
+        List<ForumUser> GetUsersWithRole(string role);
     }
 }

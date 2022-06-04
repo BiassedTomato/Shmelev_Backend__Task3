@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
 
@@ -9,9 +10,11 @@ namespace Shmelev_Backend_Task3
         ForumContext _context;
 
         IUserService _userService;
+        IMapper _mapper;
 
-        public PostService(IUserService userService, ForumContext ctx)
+        public PostService(IMapper mapper, IUserService userService, ForumContext ctx)
         {
+            _mapper = mapper;
             _context = ctx;
             _userService = userService;
         }
@@ -32,17 +35,18 @@ namespace Shmelev_Backend_Task3
 
         public async Task EditPost(int postId,PostEditModel model)
         {
-            var post = await _context.FindAsync<Post>(postId);
+            var entity = await _context.FindAsync<Post>(postId);
 
-            post.Text=model.Text;
-            post.Modified = DateTime.Now;
+            _mapper.Map(model, entity);
+
+            entity.Modified = DateTime.Now;
 
             await _context.SaveChangesAsync();
         }
 
         public async Task<Post> GetPost(int postId)
         {
-            return await _context.Posts.Include(x=>x.Thread).Include(x=>x.Thread.Board).FirstOrDefaultAsync(x => x.Id == postId);
+            return await _context.Posts.Include(x=>x.Thread).ThenInclude(x=>x.Board).FirstOrDefaultAsync(x => x.Id == postId);
         }
 
         public async Task<bool> IsAuthor(string userId, int postId)

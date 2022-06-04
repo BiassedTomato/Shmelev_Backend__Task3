@@ -10,8 +10,8 @@ using Shmelev_Backend_Task3;
 namespace Shmelev_Backend_Task3.Migrations
 {
     [DbContext(typeof(ForumContext))]
-    [Migration("20220531081529_Init")]
-    partial class Init
+    [Migration("20220602054032_Next")]
+    partial class Next
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,56 +36,6 @@ namespace Shmelev_Backend_Task3.Migrations
                     b.ToTable("ForumUserModeratedBoard");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("AspNetRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "408bfd07-dbc3-4d13-b99c-9ddca3c89d88",
-                            ConcurrencyStamp = "384e5b9b-4453-416f-837c-7ac28402c3c7",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = "759ceb0d-fb8f-49f5-b107-e5df69016e21",
-                            ConcurrencyStamp = "0c63fde7-7d19-4b87-8ed0-5de72e4adb1d",
-                            Name = "User",
-                            NormalizedName = "USER"
-                        },
-                        new
-                        {
-                            Id = "e3793a03-e61d-4025-8627-641279e96e16",
-                            ConcurrencyStamp = "33ac3133-53c2-4a93-945e-32b621605bbb",
-                            Name = "Moderator",
-                            NormalizedName = "MODERATOR"
-                        });
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
@@ -108,77 +58,6 @@ namespace Shmelev_Backend_Task3.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -227,28 +106,6 @@ namespace Shmelev_Backend_Task3.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("AspNetUserLogins");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "1",
-                            RoleId = "408bfd07-dbc3-4d13-b99c-9ddca3c89d88"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -316,6 +173,182 @@ namespace Shmelev_Backend_Task3.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Boards");
+                });
+
+            modelBuilder.Entity("Shmelev_Backend_Task3.ForumRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "dcd6603d-1e41-4c6b-87aa-541ccf5eb895",
+                            ConcurrencyStamp = "d63177a6-c6e6-463b-84c2-41749cd8fdca",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "bd7acb6c-c29a-464e-984c-b1c369f13729",
+                            ConcurrencyStamp = "d1f15ea9-d20e-41cd-9fc0-dd7f2c898570",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        },
+                        new
+                        {
+                            Id = "2dbe9c16-990d-4117-8162-8de2bc7bcfcf",
+                            ConcurrencyStamp = "0339278f-7176-46be-b9a7-d65a5577bb39",
+                            Name = "Moderator",
+                            NormalizedName = "MODERATOR"
+                        });
+                });
+
+            modelBuilder.Entity("Shmelev_Backend_Task3.ForumUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "64b6755d-ee10-4abf-99f6-7eb549e18b6f",
+                            Email = "admin@admin.ru",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@ADMIN.RU",
+                            NormalizedUserName = "ADMIN@ADMIN.RU",
+                            PasswordHash = "AQAAAAEAACcQAAAAELXaW9zbh3Q4GyRXoJs/3aQ1a11RILnF82PjzJEc6DWqys3Q6JtUQLWAwRD7LkQ8Bg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "945461d7-9f5e-4be1-872b-888cc63a75eb",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@admin.ru"
+                        },
+                        new
+                        {
+                            Id = "2",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "ceb5881d-6990-4010-9036-b1d1c49e85f7",
+                            Email = "mod@mod.ru",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "MOD@MOD.RU",
+                            NormalizedUserName = "MOD@MOD.RU",
+                            PasswordHash = "AQAAAAEAACcQAAAAED76ySbetz1ccHfWKZh9XcnXTZAaph1zrPKFsSQZS5oUCqMDmDb2jDr9AePFchdhSw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "97fbf36f-6fbc-4c20-a342-73b38b2cf0ab",
+                            TwoFactorEnabled = false,
+                            UserName = "mod@mod.ru"
+                        });
+                });
+
+            modelBuilder.Entity("Shmelev_Backend_Task3.ForumUserRole", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "1",
+                            RoleId = "dcd6603d-1e41-4c6b-87aa-541ccf5eb895"
+                        },
+                        new
+                        {
+                            UserId = "2",
+                            RoleId = "2dbe9c16-990d-4117-8162-8de2bc7bcfcf"
+                        });
                 });
 
             modelBuilder.Entity("Shmelev_Backend_Task3.ModeratedBoard", b =>
@@ -405,31 +438,6 @@ namespace Shmelev_Backend_Task3.Migrations
                     b.ToTable("Threads");
                 });
 
-            modelBuilder.Entity("Shmelev_Backend_Task3.ForumUser", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
-
-                    b.HasDiscriminator().HasValue("ForumUser");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "1",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "39534bec-8ed8-4d16-9c9c-f71acb81e446",
-                            Email = "admin@admin.ru",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN@ADMIN.RU",
-                            NormalizedUserName = "ADMIN@ADMIN.RU",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDy/9V+U356KcrkCoNBJHAuAG+A5Jc2OqRT68sGWktmQljU1Wfm6UP/ir0k4L/3/5A==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "b83360ff-0195-4a42-a38a-5fe1fa5a841a",
-                            TwoFactorEnabled = false,
-                            UserName = "admin@admin.ru"
-                        });
-                });
-
             modelBuilder.Entity("ForumUserModeratedBoard", b =>
                 {
                     b.HasOne("Shmelev_Backend_Task3.ModeratedBoard", null)
@@ -447,7 +455,7 @@ namespace Shmelev_Backend_Task3.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Shmelev_Backend_Task3.ForumRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -456,7 +464,7 @@ namespace Shmelev_Backend_Task3.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("Shmelev_Backend_Task3.ForumUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -465,22 +473,7 @@ namespace Shmelev_Backend_Task3.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("Shmelev_Backend_Task3.ForumUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -489,7 +482,7 @@ namespace Shmelev_Backend_Task3.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("Shmelev_Backend_Task3.ForumUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -505,6 +498,25 @@ namespace Shmelev_Backend_Task3.Migrations
                         .IsRequired();
 
                     b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("Shmelev_Backend_Task3.ForumUserRole", b =>
+                {
+                    b.HasOne("Shmelev_Backend_Task3.ForumRole", "Role")
+                        .WithMany("ForumUserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Shmelev_Backend_Task3.ForumUser", "User")
+                        .WithMany("ForumUserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Shmelev_Backend_Task3.ModeratedBoard", b =>
@@ -559,6 +571,20 @@ namespace Shmelev_Backend_Task3.Migrations
                     b.Navigation("Threads");
                 });
 
+            modelBuilder.Entity("Shmelev_Backend_Task3.ForumRole", b =>
+                {
+                    b.Navigation("ForumUserRoles");
+                });
+
+            modelBuilder.Entity("Shmelev_Backend_Task3.ForumUser", b =>
+                {
+                    b.Navigation("AuthoredPosts");
+
+                    b.Navigation("AuthoredThreads");
+
+                    b.Navigation("ForumUserRoles");
+                });
+
             modelBuilder.Entity("Shmelev_Backend_Task3.Post", b =>
                 {
                     b.Navigation("Attachments");
@@ -567,13 +593,6 @@ namespace Shmelev_Backend_Task3.Migrations
             modelBuilder.Entity("Shmelev_Backend_Task3.Thread", b =>
                 {
                     b.Navigation("Posts");
-                });
-
-            modelBuilder.Entity("Shmelev_Backend_Task3.ForumUser", b =>
-                {
-                    b.Navigation("AuthoredPosts");
-
-                    b.Navigation("AuthoredThreads");
                 });
 #pragma warning restore 612, 618
         }

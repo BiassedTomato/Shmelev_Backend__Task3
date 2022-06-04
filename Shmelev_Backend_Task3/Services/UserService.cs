@@ -54,6 +54,11 @@ namespace Shmelev_Backend_Task3
             return await _manager.Users.ToListAsync();
         }
 
+        public List<ForumUser> GetAllUsers(Func<ForumUser, bool> predicate)
+        {
+            return _manager.Users.Where(predicate).ToList();
+        }
+
         public bool HasModerator(int boardId,string userId)
         {
 
@@ -108,6 +113,16 @@ namespace Shmelev_Backend_Task3
                 throw new NullReferenceException("No post found");
 
             return post.AuthorId;
+        }
+
+        public List<ForumUser> GetUsersWithRole(string role)
+        {
+            return  _context.Users
+                .Include(x => x.ForumUserRoles)
+                .ThenInclude(x => x.Role)
+                .Where(x => x.ForumUserRoles
+                .Any(x => x.Role.Name == role))
+                .ToList();
         }
     }
 }

@@ -31,60 +31,84 @@ namespace Shmelev_Backend_Task3
         [HttpGet]
         public async Task<IActionResult> Index(int threadId)
         {
-            var thread = await _threadService.GetThread(threadId);
-
-            if (thread == null)
+            try
             {
-                HttpContext.Response.StatusCode = 404;
+                var thread = await _threadService.GetThread(threadId);
 
-                return View();
+                if (thread == null)
+                {
+                    HttpContext.Response.StatusCode = 404;
+
+                    return View();
+                }
+
+                var model = new ThreadViewModel()
+                {
+                    Posts = thread.Posts.ToList(),
+                    ThreadId = threadId
+                };
+
+                return View(model);
             }
-
-            var model = new ThreadViewModel()
+            catch
             {
-                Posts = thread.Posts.ToList(),
-                ThreadId = threadId
-            };
-
-            return View(model);
+                return View("Error", new ErrorViewModel() { Message = "Something unexpected happened. Working on fixing this. It's not you, it's me." });
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(int threadId)
         {
-            var thread = await _threadService.GetThread(threadId);
-
-            if (await HasNoRights(threadId))
+            try
             {
-                return View("Error", new ErrorViewModel() { Message = "You cannot access this page." });
+
+                var thread = await _threadService.GetThread(threadId);
+
+                if (await HasNoRights(threadId))
+                {
+                    return View("Error", new ErrorViewModel() { Message = "You cannot access this page." });
+                }
+
+                if (thread == null)
+                {
+                    return View("Error", new ErrorViewModel() { Message = "No such thread found. Try another one, perhaps?" });
+
+                }
+
+                var model = new ThreadDeleteModel()
+                {
+                    ThreadId = threadId,
+                    Name = thread.Name
+                };
+
+                return View("Delete", model);
             }
-
-            if (thread == null)
+            catch
             {
-                return null;
+                return View("Error", new ErrorViewModel() { Message = "Something unexpected happened. Working on fixing this. It's not you, it's me." });
             }
-
-            var model = new ThreadDeleteModel()
-            {
-                ThreadId = threadId,
-                Name = thread.Name
-            };
-
-            return View("Delete", model);
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> Delete(ThreadDeleteModel model)
         {
-            if (await HasNoRights(model.ThreadId))
+            try
             {
-                return View("Error", new ErrorViewModel() { Message = "You cannot access this page." });
+                if (await HasNoRights(model.ThreadId))
+                {
+                    return View("Error", new ErrorViewModel() { Message = "You cannot access this page." });
+                }
+
+                var thread = await _threadService.GetThread(model.ThreadId);
+
+                await _threadService.RemoveThread(model.ThreadId);
+                return RedirectToAction("DisplayBoard", "Boards", new { boardId = thread.BoardId });
             }
-
-            var thread = await _threadService.GetThread(model.ThreadId);
-
-            await _threadService.RemoveThread(model.ThreadId);
-            return RedirectToAction("DisplayBoard", "Boards", new { boardId = thread.BoardId });
+            catch
+            {
+                return View("Error", new ErrorViewModel() { Message = "Something unexpected happened. Working on fixing this. It's not you, it's me." });
+            }
         }
 
         [HttpGet]
@@ -100,29 +124,40 @@ namespace Shmelev_Backend_Task3
 
         [Authorize]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ThreadCreateModel model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var userId = await _userService.GetUserId(HttpContext.User);
+                if (ModelState.IsValid)
+                {
+                    var userId = await _userService.GetUserId(HttpContext.User);
 
-                var thread = _mapper.Map<Thread>(model);
+                    var thread = _mapper.Map<Thread>(model);
 
-                thread.Created = DateTime.Now;
-                thread.AuthorId = userId;
+                    thread.Created = DateTime.Now;
+                    thread.AuthorId = userId;
 
-                await _threadService.CreateThread(thread);
+                    await _threadService.CreateThread(thread);
 
-                return RedirectToAction("DisplayBoard", "Boards", new { boardId = model.BoardId });
+                    return RedirectToAction("DisplayBoard", "Boards", new { boardId = model.BoardId });
+                }
+
+                return View(model);
             }
-
-            return View(model);
+            catch
+            {
+                return View("Error", new ErrorViewModel() { Message = "Something unexpected happened. Working on fixing this. It's not you, it's me." });
+            }
         }
 
         async Task<bool> HasNoRights(int threadId)
         {
             var thread = await _threadService.GetThread(threadId);
             var userId = await _userService.GetUserId(HttpContext.User);
+
+            if (thread == null)
+                return false;
 
             return !HttpContext.User.IsInRole("Admin") &&
                 !_userService.HasModerator(thread.BoardId, userId) &&
@@ -133,61 +168,75 @@ namespace Shmelev_Backend_Task3
         [Authorize]
         public async Task<IActionResult> Edit(int threadId)
         {
-
-            var thread = await _threadService.GetThread(threadId);
-
-            var userId = await _userService.GetUserId(HttpContext.User);
-
-            bool no = await HasNoRights(threadId);
-
-            if (no)
+            try
             {
-                return View("Error", new ErrorViewModel() { Message = "You cannot access this page." });
-            }
+                var thread = await _threadService.GetThread(threadId);
 
+                var userId = await _userService.GetUserId(HttpContext.User);
 
-            var id = await _userService.GetUserId(HttpContext.User);
+                bool no = await HasNoRights(threadId);
 
-            if (thread.AuthorId != id)
-            {
-                ErrorViewModel m = new ErrorViewModel()
+                if (no)
                 {
-                    Message = "Only the OP can edit this thread."
-                };
+                    return View("Error", new ErrorViewModel() { Message = "You cannot access this page." });
+                }
 
-                return View("Error", m);
+
+                var id = await _userService.GetUserId(HttpContext.User);
+
+                if (thread.AuthorId != id)
+                {
+                    ErrorViewModel m = new ErrorViewModel()
+                    {
+                        Message = "Only the OP can edit this thread."
+                    };
+
+                    return View("Error", m);
+                }
+
+                var model = _mapper.Map<ThreadEditModel>(thread);
+                model.ThreadId = threadId;
+
+                return View("Edit", model);
             }
-
-            var model = _mapper.Map<ThreadEditModel>(thread);
-            model.ThreadId = threadId;
-
-            return View("Edit", model);
+            catch
+            {
+                return View("Error", new ErrorViewModel() { Message = "Something unexpected happened. Working on fixing this. It's not you, it's me." });
+            }
         }
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize]
         public async Task<IActionResult> Edit(ThreadEditModel model)
         {
-            var id = await _userService.GetUserId(HttpContext.User);
-
-            bool no = await HasNoRights(model.ThreadId);
-
-            if (no)
+            try
             {
-                return View("Error", new ErrorViewModel() { Message = "You cannot access this page." });
+
+                var id = await _userService.GetUserId(HttpContext.User);
+
+                bool no = await HasNoRights(model.ThreadId);
+
+                if (no)
+                {
+                    return View("Error", new ErrorViewModel() { Message = "You cannot access this page." });
+                }
+
+
+                if (ModelState.IsValid)
+                {
+                    await _threadService.EditThread(model.ThreadId, model);
+                    return RedirectToAction("DisplayBoard", "Boards", new { boardId = model.BoardId });
+                }
+
+                return View("Edit", model);
+
             }
-
-            
-
-            if (ModelState.IsValid)
+            catch
             {
-                await _threadService.EditThread(model.ThreadId, model);
-                return RedirectToAction("DisplayBoard", "Boards", new { boardId = model.BoardId });
+                return View("Error", new ErrorViewModel() { Message = "Something unexpected happened. Working on fixing this. It's not you, it's me." });
             }
-
-            return View("Edit", model);
-
 
         }
     }

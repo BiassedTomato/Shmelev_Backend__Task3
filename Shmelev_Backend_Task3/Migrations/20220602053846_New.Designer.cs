@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Shmelev_Backend_Task3;
 
 namespace Shmelev_Backend_Task3.Migrations
 {
     [DbContext(typeof(ForumContext))]
-    partial class ForumContextModelSnapshot : ModelSnapshot
+    [Migration("20220602053846_New")]
+    partial class New
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -202,22 +204,22 @@ namespace Shmelev_Backend_Task3.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "dcd6603d-1e41-4c6b-87aa-541ccf5eb895",
-                            ConcurrencyStamp = "d63177a6-c6e6-463b-84c2-41749cd8fdca",
+                            Id = "6ada523d-0a36-4002-bc56-3296fe6a6f52",
+                            ConcurrencyStamp = "bbdc13ac-4cda-43f9-9f79-05d639237e81",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "bd7acb6c-c29a-464e-984c-b1c369f13729",
-                            ConcurrencyStamp = "d1f15ea9-d20e-41cd-9fc0-dd7f2c898570",
+                            Id = "2977ed39-183e-40cb-8bb6-c193427dbc80",
+                            ConcurrencyStamp = "d0f389bb-adbd-4f35-8f32-7ea2a1d15b4e",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "2dbe9c16-990d-4117-8162-8de2bc7bcfcf",
-                            ConcurrencyStamp = "0339278f-7176-46be-b9a7-d65a5577bb39",
+                            Id = "229c7b7c-d68e-4f2a-bb73-1bb28c5cb36c",
+                            ConcurrencyStamp = "42782db2-4b2d-406a-a9ac-022fbac39d83",
                             Name = "Moderator",
                             NormalizedName = "MODERATOR"
                         });
@@ -292,33 +294,17 @@ namespace Shmelev_Backend_Task3.Migrations
                         {
                             Id = "1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "64b6755d-ee10-4abf-99f6-7eb549e18b6f",
+                            ConcurrencyStamp = "797f1fcd-ed62-4cb9-af59-63647a745d15",
                             Email = "admin@admin.ru",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.RU",
                             NormalizedUserName = "ADMIN@ADMIN.RU",
-                            PasswordHash = "AQAAAAEAACcQAAAAELXaW9zbh3Q4GyRXoJs/3aQ1a11RILnF82PjzJEc6DWqys3Q6JtUQLWAwRD7LkQ8Bg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEOTapph9zvCyo9V9HmFLO6PYzSGOINh9Yo2f37IOATFqKWUZvGCDHQ/eTNkWt1At5A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "945461d7-9f5e-4be1-872b-888cc63a75eb",
+                            SecurityStamp = "9e386ee1-c069-4db4-8efa-1f227cb18469",
                             TwoFactorEnabled = false,
                             UserName = "admin@admin.ru"
-                        },
-                        new
-                        {
-                            Id = "2",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "ceb5881d-6990-4010-9036-b1d1c49e85f7",
-                            Email = "mod@mod.ru",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "MOD@MOD.RU",
-                            NormalizedUserName = "MOD@MOD.RU",
-                            PasswordHash = "AQAAAAEAACcQAAAAED76ySbetz1ccHfWKZh9XcnXTZAaph1zrPKFsSQZS5oUCqMDmDb2jDr9AePFchdhSw==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "97fbf36f-6fbc-4c20-a342-73b38b2cf0ab",
-                            TwoFactorEnabled = false,
-                            UserName = "mod@mod.ru"
                         });
                 });
 
@@ -340,12 +326,7 @@ namespace Shmelev_Backend_Task3.Migrations
                         new
                         {
                             UserId = "1",
-                            RoleId = "dcd6603d-1e41-4c6b-87aa-541ccf5eb895"
-                        },
-                        new
-                        {
-                            UserId = "2",
-                            RoleId = "2dbe9c16-990d-4117-8162-8de2bc7bcfcf"
+                            RoleId = "6ada523d-0a36-4002-bc56-3296fe6a6f52"
                         });
                 });
 

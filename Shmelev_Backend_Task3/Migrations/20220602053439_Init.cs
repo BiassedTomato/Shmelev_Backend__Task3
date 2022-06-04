@@ -26,7 +26,6 @@ namespace Shmelev_Backend_Task3.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -296,20 +295,20 @@ namespace Shmelev_Backend_Task3.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "408bfd07-dbc3-4d13-b99c-9ddca3c89d88", "384e5b9b-4453-416f-837c-7ac28402c3c7", "Admin", "ADMIN" },
-                    { "759ceb0d-fb8f-49f5-b107-e5df69016e21", "0c63fde7-7d19-4b87-8ed0-5de72e4adb1d", "User", "USER" },
-                    { "e3793a03-e61d-4025-8627-641279e96e16", "33ac3133-53c2-4a93-945e-32b621605bbb", "Moderator", "MODERATOR" }
+                    { "157f3d1f-9ac3-4e72-bddc-7d801950c5f4", "057df98a-02ea-47fc-b85d-6b5ab25725b8", "Admin", "ADMIN" },
+                    { "f4f7533a-4ddb-49e0-ad2d-436a881f35bc", "900d3b82-52bb-42e1-a211-4ddda15ccf56", "User", "USER" },
+                    { "fda64a77-c2ea-4da1-a9c1-508bcd5c412d", "92b80f7b-1c67-4ec6-bd5b-b8311f36d220", "Moderator", "MODERATOR" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "1", 0, "39534bec-8ed8-4d16-9c9c-f71acb81e446", "ForumUser", "admin@admin.ru", true, false, null, "ADMIN@ADMIN.RU", "ADMIN@ADMIN.RU", "AQAAAAEAACcQAAAAEDy/9V+U356KcrkCoNBJHAuAG+A5Jc2OqRT68sGWktmQljU1Wfm6UP/ir0k4L/3/5A==", null, false, "b83360ff-0195-4a42-a38a-5fe1fa5a841a", false, "admin@admin.ru" });
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "1", 0, "9a025420-fc25-46a8-80f0-d1275ad47171", "admin@admin.ru", true, false, null, "ADMIN@ADMIN.RU", "ADMIN@ADMIN.RU", "AQAAAAEAACcQAAAAEJdBuOPDD1x+guNdqnNMKMIHfHzAmSDIM5ds0jKqVqEeHonw0ZVwlrg0Ti+yX1UWrQ==", null, false, "bf7d5765-f11d-43b9-af18-f995f6dee12b", false, "admin@admin.ru" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "408bfd07-dbc3-4d13-b99c-9ddca3c89d88", "1" });
+                values: new object[] { "157f3d1f-9ac3-4e72-bddc-7d801950c5f4", "1" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

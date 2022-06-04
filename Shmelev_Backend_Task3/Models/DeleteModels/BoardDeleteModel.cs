@@ -1,9 +1,9 @@
 ﻿namespace Shmelev_Backend_Task3
 {
-    public class ThreadDeleteModel
+    public class BoardDeleteModel
     {
-        public int ThreadId { get; set; }
-
+        public int BoardId { get; set; }
         public string Name { get; set; }
+
     }
 }

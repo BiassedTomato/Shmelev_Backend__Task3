@@ -23,7 +23,7 @@ namespace Shmelev_Backend_Task3
         IAttachmentService _attachmentService;
 
         public PostsController(
-            IWebHostEnvironment env, IMapper mapper, 
+            IWebHostEnvironment env, IMapper mapper,
             IUserService userService, IPostService srv, IAttachmentService attachmentService,
             ForumContext ctx)
         {
@@ -34,6 +34,7 @@ namespace Shmelev_Backend_Task3
             _environment = env;
             _attachmentService = attachmentService;
         }
+
 
         [Authorize]
         [HttpGet]
@@ -47,150 +48,204 @@ namespace Shmelev_Backend_Task3
             return View("Create", model);
         }
 
+        [ValidateAntiForgeryToken]
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(PostCreateModel model, int threadId)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var userId = await _userService.GetUserId(HttpContext.User);
 
-                var post = _mapper.Map<Post>(model);
+                if (ModelState.IsValid)
+                {
+                    var userId = await _userService.GetUserId(HttpContext.User);
 
-                post.ThreadId = threadId;
-                post.AuthorId = userId;
-                post.Created = DateTime.Now;
+                    var post = _mapper.Map<Post>(model);
 
-                if (model.Files != null)
-                    foreach (var file in model.Files)
-                    {
-                        var stream = file.OpenReadStream();
+                    post.ThreadId = threadId;
+                    post.AuthorId = userId;
+                    post.Created = DateTime.Now;
 
-                        Random rand = new Random();
-
-                        
-                        var path= new StringBuilder()
-                            .Append(_environment.WebRootPath)
-                            .Append("\\uploads\\").Append("usr_")
-                            .Append(DateTime.Now.ToString("dd'.'MM'.'yyyy_HH.mm.ss", CultureInfo.InvariantCulture))
-                            .Append("_")
-                            .Append(rand.Next())
-                            .Append("_")
-                            .Append(file.FileName)
-                            .ToString();
-
-                        var attachment = new Attachment()
+                    if (model.Files != null)
+                        foreach (var file in model.Files)
                         {
-                            Created = DateTime.Now,
-                            FileName = file.FileName,
-                            FilePath = path,
-                            Post = post
+                            var stream = file.OpenReadStream();
 
-                        };
+                            Random rand = new Random();
 
 
+                            var path = new StringBuilder()
+                                .Append(_environment.WebRootPath)
+                                .Append("\\uploads\\").Append("usr_")
+                                .Append(DateTime.Now.ToString("dd'.'MM'.'yyyy_HH.mm.ss", CultureInfo.InvariantCulture))
+                                .Append("_")
+                                .Append(rand.Next())
+                                .Append("_")
+                                .Append(file.FileName)
+                                .ToString();
 
-                        using (FileStream fileStream = new FileStream(path, FileMode.Create))
-                        {
-                            await stream.CopyToAsync(fileStream);
+                            var attachment = new Attachment()
+                            {
+                                Created = DateTime.Now,
+                                FileName = file.FileName,
+                                FilePath = path,
+                                Post = post
+
+                            };
+
+
+
+                            using (FileStream fileStream = new FileStream(path, FileMode.Create))
+                            {
+                                await stream.CopyToAsync(fileStream);
+                            }
+
+                            await _attachmentService.CreateAttachment(attachment, false);
+
                         }
 
-                       await _attachmentService.CreateAttachment(attachment,false);
+                    await _postService.CreatePost(post);
 
-                    }
+                    return RedirectToAction("Index", "Threads", new { threadId = threadId });
+                }
 
-                await _postService.CreatePost(post);
-
-                return RedirectToAction("Index", "Threads", new { threadId = threadId });
+                return View("Create", model);
             }
-
-            return View("Create", model);
+            catch
+            {
+                return View("Error", new ErrorViewModel() { Message = "Something unexpected happened. Working on fixing this. It's not you, it's me." });
+            }
         }
 
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> Delete(int postId)
         {
-            if (await HasNoRights(postId))
+            try
             {
-                return View("Error", new ErrorViewModel() { Message = "You cannot access this page." });
+
+                if (await HasNoRights(postId))
+                {
+                    return View("Error", new ErrorViewModel() { Message = "You cannot access this page." });
+                }
+
+                var post = await _postService.GetPost(postId);
+
+                if (post == null)
+                {
+                    return View("Error", new ErrorViewModel() { Message = "We tried really hard, but couldn't find the post to delete." });
+                }
+
+                var model = new PostDeleteModel()
+                {
+                    PostId = postId,
+                    Text = post.Text,
+                    ThreadId = post.ThreadId
+                };
+
+
+
+                return View("Delete", model);
             }
-
-            var post = await _postService.GetPost(postId);
-
-            var model = new PostDeleteModel()
+            catch
             {
-                PostId = postId,
-                Text = post.Text,
-                ThreadId = post.ThreadId
-            };
-
-
-
-            return View("Delete", model);
+                return View("Error", new ErrorViewModel() { Message = "Something unexpected happened. Working on fixing this. It's not you, it's me." });
+            }
         }
 
+        [ValidateAntiForgeryToken]
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Delete(PostDeleteModel model)
         {
-            if (await HasNoRights(model.PostId))
+            try
             {
-                return View("Error", new ErrorViewModel() { Message = "You cannot access this page." });
-            }
-            await _postService.RemovePost(model.PostId);
 
-            return RedirectToAction("Index", "Threads", new { threadId = model.ThreadId });
+                if (await HasNoRights(model.PostId))
+                {
+                    return View("Error", new ErrorViewModel() { Message = "You cannot access this page." });
+                }
+                await _postService.RemovePost(model.PostId);
+
+                return RedirectToAction("Index", "Threads", new { threadId = model.ThreadId });
+            }
+            catch
+            {
+                return View("Error", new ErrorViewModel() { Message = "Something unexpected happened. Working on fixing this. It's not you, it's me." });
+            }
         }
 
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> Edit(int postId)
         {
-            var userId = await _userService.GetUserId(HttpContext.User);
-
-            if (await HasNoRights(postId))
+            try
             {
-                return View("Error", new ErrorViewModel() { Message = "You cannot access this page." });
+
+                var userId = await _userService.GetUserId(HttpContext.User);
+
+                if (await HasNoRights(postId))
+                {
+                    return View("Error", new ErrorViewModel() { Message = "You cannot access this page." });
+                }
+
+                await HasNoRights(postId);
+
+                var post = await _postService.GetPost(postId);
+
+                if (post == null)
+                {
+                    return View("Error", new ErrorViewModel() { Message = "We tried really hard, but couldn't find the post to delete." });
+                }
+
+                if (post.AuthorId != userId)
+                {
+                    return View("Error", new ErrorViewModel() { Message = "Only the author can edit this message." });
+                }
+
+                var model = new PostEditModel()
+                {
+                    Text = post.Text,
+                    PostId = postId,
+                    ThreadId = post.ThreadId
+                };
+
+                return View("Edit", model);
             }
-
-            await HasNoRights(postId);
-
-            var post = await _postService.GetPost(postId);
-
-            if (post.AuthorId != userId)
+            catch
             {
-                return View("Error", new ErrorViewModel() { Message = "Only the author can edit this message." });
+                return View("Error", new ErrorViewModel() { Message = "Something unexpected happened. Working on fixing this. It's not you, it's me." });
             }
-
-            var model = new PostEditModel()
-            {
-                Text = post.Text,
-                PostId = postId,
-                ThreadId = post.ThreadId
-            };
-
-            return View("Edit", model);
         }
 
+        [ValidateAntiForgeryToken]
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Edit(PostEditModel model)
         {
-            if (await HasNoRights(model.PostId))
+            try
             {
-                return View("Error", new ErrorViewModel() { Message = "You cannot access this page." });
-            }
 
-            if (ModelState.IsValid)
+                if (await HasNoRights(model.PostId))
+                {
+                    return View("Error", new ErrorViewModel() { Message = "You cannot access this page." });
+                }
+
+                if (ModelState.IsValid)
+                {
+                    await _postService.EditPost(model.PostId, model);
+
+                    return RedirectToAction("Index", "Threads", new { threadId = model.ThreadId });
+
+                }
+
+                return View("Edit", model);
+            }
+            catch
             {
-                await _postService.EditPost(model.PostId, model);
-
-                return RedirectToAction("Index", "Threads", new { threadId = model.ThreadId });
+                return View("Error", new ErrorViewModel() { Message = "Something unexpected happened. Working on fixing this. It's not you, it's me." });
 
             }
-
-            return View("Edit", model);
         }
 
         async Task<bool> HasNoRights(int postId)
@@ -198,10 +253,12 @@ namespace Shmelev_Backend_Task3
             var post = await _postService.GetPost(postId);
             var userId = await _userService.GetUserId(HttpContext.User);
 
+            if (post == null)
+                return false;
+
             return !HttpContext.User.IsInRole("Admin") &&
                 !_userService.HasModerator(post.Thread.BoardId, userId) &&
                 !await _postService.IsAuthor(userId, post.Id);
         }
-
     }
 }

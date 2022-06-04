@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -7,16 +9,19 @@ namespace Shmelev_Backend_Task3
     public class BoardService : IBoardService
     {
         ForumContext _context;
+        IMapper _mapper;
+
+        public BoardService(IMapper mapper, ForumContext ctx)
+        {
+            _mapper = mapper;
+            _context = ctx;
+        }
 
         public async Task<List<Board>> GetAllBoards()
         {
             return await _context.Boards.ToListAsync();
         }
 
-        public BoardService(ForumContext ctx)
-        {
-            _context = ctx;
-        }
 
         public async Task CreateBoard(Board board)
         {
@@ -39,7 +44,15 @@ namespace Shmelev_Backend_Task3
 
         public async Task EditBoard(int boardId, BoardEditModel model)
         {
+            var entity = await _context.FindAsync<Board>(boardId);
 
+            if (entity == null)
+            {
+                throw new Exception($"No entity with a primary key {boardId}");
+            }
+            _mapper.Map(model, entity);
+
+            await _context.SaveChangesAsync();
         }
 
         /// <summary>
@@ -50,6 +63,14 @@ namespace Shmelev_Backend_Task3
         public async Task<Board> GetBoard(int boardId)
         {
             return await _context.Boards.Include(x => x.Threads).FirstOrDefaultAsync(x => x.Id == boardId);
+        }
+
+        public async Task RemoveBoard(int boardId)
+        {
+            var board = await _context.Boards.FindAsync(boardId);
+
+            _context.Boards.Remove(board);
+            await _context.SaveChangesAsync();
         }
     }
 }

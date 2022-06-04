@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Shmelev_Backend_Task3.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,13 +38,14 @@ namespace Shmelev_Backend_Task3
             services.AddScoped<IThreadService, ThreadService>();
             services.AddScoped<IBoardService, BoardService>();
             services.AddScoped<IAttachmentService, AttachmentService>();
+            services.AddScoped<IAdministrationService, AdministrationService>();
 
             /*Mapper profile*/
             services.AddAutoMapper(typeof(ForumMapperProfile));
 
             services.AddDefaultIdentity<ForumUser>(options =>
             options.SignIn.RequireConfirmedAccount = false)
-                .AddRoles<IdentityRole>()
+                .AddRoles<ForumRole>()
                 .AddSignInManager()
                 .AddEntityFrameworkStores<ForumContext>()
                 .AddDefaultTokenProviders();

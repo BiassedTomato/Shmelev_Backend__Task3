@@ -9,13 +9,13 @@
             <input type="text" asp-for="Name" />
             <input type="hidden" asp-for="BoardId" />
             <input type="hidden" asp-for="ThreadId" />
-            <span asp-validation-for="Name"></span> <br />
+            <span asp-validation-for="Name" class="text-danger"></span> <br />
 
             <textarea asp-for="Description">
 
 
             </textarea>
-            <span asp-validation-for="Description"></span> <br />
+            <span asp-validation-for="Description" class="text-danger"></span> <br />
             <input type="submit" value="Update" class="btn btn-primary" />
         </div>
     </form>

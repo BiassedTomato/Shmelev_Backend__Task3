@@ -13,5 +13,8 @@ namespace Shmelev_Backend_Task3
         Task<Board> GetBoard(int id);
 
         Task<List<Board>> GetAllBoards();
+
+        Task RemoveBoard(int boardId);
+
     }
 }

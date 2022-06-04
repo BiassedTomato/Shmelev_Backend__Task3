@@ -9,8 +9,9 @@
             <textarea asp-for="Text">
 
 
-                 </textarea>
-            <span asp-validation-for="Text"></span> <br />
+            </textarea>
+
+            <span asp-validation-for="Text" class="text-danger"></span> <br />
             <input type="hidden" asp-for="ThreadId" />
             <input type="hidden" asp-for="PostId" />
             <input type="submit" value="Update" class="btn btn-primary" />
